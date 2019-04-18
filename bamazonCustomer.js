@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
 
 
 connection.connect(function (err) {
-    if (err) throw err;
+    if (err) return err;
 
    
     products();
@@ -22,7 +22,7 @@ connection.connect(function (err) {
 
 function products() {
     connection.query('SELECT * FROM products', function (err, res) {
-        if (err) throw err;
+        if (err) return err;
 
         console.log('');
         console.log('-------------Inventory---------------');
@@ -47,7 +47,7 @@ function products() {
 
 function start() {
     connection.query("SELECT * FROM products", function(err, res) {
-        if (err) throw console.log("connection error:" + err);
+        if (err) return console.log("connection error:" + err);
     inquirer
         .prompt([
                 {
@@ -96,7 +96,7 @@ function start() {
                     ],
                         function (error) {
 
-                            if (error) throw err;
+                            if (error) return err;
                             console.log("==============================================");
                             console.log("\n\r");
                             console.log("Order details:");
