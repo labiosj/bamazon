@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) return err;
 
-   
+
     products();
 });
 
@@ -39,89 +39,89 @@ function products() {
             console.log(' ');
 
         }
-    
+
         start();
     });
 }
 
 
 function start() {
-    connection.query("SELECT * FROM products", function(err, res) {
+    connection.query("SELECT * FROM products", function (err, res) {
         if (err) return console.log("connection error:" + err);
-    inquirer
-        .prompt([
+        inquirer
+            .prompt([
                 {
                     name: 'selectId',
                     type: 'input',
                     message: 'Enter the id number you want to purchase:',
 
 
-        },
+                },
 
                 {
                     name: 'amountBought',
                     type: 'input',
                     message: 'How many would you like?',
                 }
-            ]).then (function (answers) {
-            var query = "SELECT * FROM products WHERE ?";
-            connection.query(query, {
-                item_id: answers.selectId
-            }, function (err, res) {
+            ]).then(function (answers) {
+                var query = "SELECT * FROM products WHERE ?";
+                connection.query(query, {
+                    item_id: answers.selectId
+                }, function (err, res) {
 
 
-              
 
-                var inStock = res[0].Stock_quantity;
-                var itemBought = answers.amountBought;
 
-                if (inStock >= itemBought) {
-                    var leftInStock = inStock - itemBought;
-                    
-                    var totalPrice = res[0].price * itemBought;
-                    var itemPurchased = res[0].product_name;
-                    
-                    console.log(totalPrice + "  total price of items bought");
-                    
-                    connection.query(
-                        "UPDATE products SET ? WHERE ?", [
-                            {
-                                Stock_quantity: leftInStock
-                                
-                        },
-                            {
-                                item_id: answers.selectId
-                        }
+                    var inStock = res[0].Stock_quantity;
+                    var itemBought = answers.amountBought;
 
-                    ],
-                        function (error) {
+                    if (inStock >= itemBought) {
+                        var leftInStock = inStock - itemBought;
 
-                            if (error) return err;
-                            console.log("==============================================");
-                            console.log("\n\r");
-                            console.log("Order details:");
-                            console.log("Item bought " + itemPurchased);
-                            console.log("Quanity bought " + itemBought + " for $" + res[0].price);
-                            console.log("Total Cost: $" + totalPrice);
-                            console.log("\n\r");
-                            console.log("Thank you for shopping with us.");
-                            console.log("==============================================");
-                            products();
+                        var totalPrice = res[0].price * itemBought;
+                        var itemPurchased = res[0].product_name;
 
-                        }
-                    );
-                } else {
-                    console.log("==============================================");
-                    console.log("\n\r");
-                    console.log("Not enough of that product");
-                    console.log("\n\r");
-                    console.log("==============================================");
-                   products();
+                        console.log(totalPrice + "  total price of items bought");
 
-                }
+                        connection.query(
+                            "UPDATE products SET ? WHERE ?", [
+                                {
+                                    Stock_quantity: leftInStock
+
+                                },
+                                {
+                                    item_id: answers.selectId
+                                }
+
+                            ],
+                            function (error) {
+
+                                if (error) return err;
+                                console.log("==============================================");
+                                console.log("\n\r");
+                                console.log("Order details:");
+                                console.log("Item bought " + itemPurchased);
+                                console.log("Quanity bought " + itemBought + " for $" + res[0].price);
+                                console.log("Total Cost: $" + totalPrice);
+                                console.log("\n\r");
+                                console.log("Thank you for shopping with us.");
+                                console.log("==============================================");
+                                products();
+
+                            }
+                        );
+                    } else {
+                        console.log("==============================================");
+                        console.log("\n\r");
+                        console.log("Not enough of that product");
+                        console.log("\n\r");
+                        console.log("==============================================");
+                        products();
+
+                    }
+
+                });
 
             });
-        
-        });
-        });
-    }
+    });
+}
